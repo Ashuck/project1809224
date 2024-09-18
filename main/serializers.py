@@ -62,6 +62,8 @@ class RedBookSpeciesSerializer(ModelSerializer):
     favorite_count = SerializerMethodField()
     is_favorite = SerializerMethodField()
     gallery = SpeciesGallerySerializer(many=True)
+    squad = SerializerMethodField()
+    family = SerializerMethodField()
 
     class Meta:
         model = RedBookSpecies
@@ -90,6 +92,15 @@ class RedBookSpeciesSerializer(ModelSerializer):
     def get_is_favorite(self, obj: RedBookSpecies):
         return self.is_favorite
     
+    def get_squad(self, obj: RedBookSpecies):
+        if not obj.squad: return None
+        return f"{obj.squad.title} - {obj.squad.international_name}"
+
+    def get_family(self, obj: RedBookSpecies):
+        if not obj.family: return None
+        return f"{obj.family.title} - {obj.family.international_name}"
+
+    
 
 class ShortRedBookSpeciesSerializer(ModelSerializer):
     photo = SerializerMethodField()
@@ -115,7 +126,7 @@ class UserGallerySerializer(ModelSerializer):
 
     class Meta:
         model = UserGallery
-        fields = 'id', 'status', 'specie' 'photo'
+        fields = 'id', 'status', 'specie', 'photo'
 
 
 class UserInfoSerializer(ModelSerializer):

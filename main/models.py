@@ -6,10 +6,10 @@ from datetime import datetime
 
 class TypeSpecies(models.Model):
     class Meta:
-        verbose_name = "Тип"
-        verbose_name_plural = "Типы видов"
+        verbose_name = "Раздел"
+        verbose_name_plural = "Разделы живых существ на сайте"
     
-    title = models.CharField("Название", max_length=64) 
+    title = models.CharField("Название раздела", max_length=64) 
     short_description = models.TextField("Короткое описание")
     description = models.TextField("Описание")
     photo = models.ImageField("Фотография")
@@ -36,7 +36,7 @@ class Squads(models.Model):
         verbose_name = "Отряд/отдел/порядок"
         verbose_name_plural = "Отряд/отдел/порядок"
     
-    title = models.CharField("Название", max_length=64)
+    title = models.CharField("Название Отрядa/отделa/порядкa", max_length=64)
     international_name = models.CharField("Муждународное название", default="", max_length=64)
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Families(models.Model):
         verbose_name = "Семейство"
         verbose_name_plural = "Семейства"
     
-    title = models.CharField("Название", max_length=64)
+    title = models.CharField("Название семейства", max_length=64)
     international_name = models.CharField("Муждународное название", default="", max_length=64)
 
     def __str__(self):
@@ -120,7 +120,7 @@ class UserInfo(models.Model):
     first_name = models.CharField("Имя", max_length=32)
     second_name = models.CharField("Фамилия", max_length=32)
     email = models.EmailField("E-mail", unique=True)
-    favorite_species = models.ManyToManyField(RedBookSpecies, verbose_name="Фавориты из книги", related_name="user_favorities")
+    favorite_species = models.ManyToManyField(RedBookSpecies, verbose_name="Фавориты из книги", related_name="user_favorities", blank=True)
     avatar = models.ImageField("Фотография", upload_to="UserAvatar", blank=True, null=True, default=None)
     
     def __str__(self):

@@ -2,6 +2,9 @@ from typing import Any
 from django.contrib import admin
 from django.http import HttpRequest
 from django.utils.safestring import mark_safe
+from django_admin_listfilter_dropdown.filters import (
+    DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter
+)
 
 
 from main import models
@@ -11,7 +14,7 @@ from main import models
 # admin.site.register(models.UserGallery)
 admin.site.register(models.Squads)
 admin.site.register(models.Families)
-admin.site.register(models.HabitatAreas)
+# admin.site.register(models.HabitatAreas)
 admin.site.register(models.TypeSpecies)
 
 
@@ -35,7 +38,20 @@ class Inline_SpeciesGallery(admin.StackedInline):
 
 @admin.register(models.RedBookSpecies)
 class RedBookSpeciesAdmin(admin.ModelAdmin):
+    list_filter = (
+        ('type__title',  DropdownFilter),
+        ('squad__title',  DropdownFilter),
+        ('family__title',  DropdownFilter),
+    )
+    search_fields = ('title', 'international_name')
     inlines = [Inline_SpeciesGallery]
+    list_display = ('title','type', 'squad', 'family', 'iframe_map_exists')
+
+    @admin.display(description='Есть карта')
+    def iframe_map_exists(self, ub:models.RedBookSpecies):
+        if ub.iframe_map != "-":
+           return "+"
+        return "-"
 
 
 class Inline_UserGallery(admin.StackedInline):
@@ -43,6 +59,7 @@ class Inline_UserGallery(admin.StackedInline):
     extra = 0
     fields = 'specie', 'status', 'photo', 'view_photo'
     readonly_fields = ('view_photo',)
+    
     
     @admin.display(description='Фотография')
     def view_photo(self, ug:models.UserGallery):
@@ -58,8 +75,40 @@ class Inline_UserGallery(admin.StackedInline):
 
 @admin.register(models.UserInfo)
 class UserInfoAdmin(admin.ModelAdmin):
+    list_filter = (
+        ('role', DropdownFilter),
+    )
+    list_display = ('first_name', 'second_name', 'role', 'user')
     inlines = [Inline_UserGallery]
+    
 
 @admin.register(models.UserGallery)
 class UserGalleryAdmin(admin.ModelAdmin):
+    list_filter = (
+        ('status', DropdownFilter),
+        ('user__user__username', DropdownFilter),
+    )
+    list_display = ('specie','status', 'user')
+
+@admin.register(models.HabitatAreas)
+class HabitatAreasAdmin(admin.ModelAdmin):
     pass
+    fields = ('title', 'description', 'iframe_map', 
+              'specie_list'
+            )
+    readonly_fields = ('specie_list',)
+
+
+    @admin.display(description='Обитатели')
+    def specie_list(self, ha:models.HabitatAreas):
+        template = "<div>{}</div>"
+        template_element = "<a href=\"{url}\">{title}</a><br>"
+        content = ""
+        for specie in ha.red_book_species.all():
+            content = content + template_element.format(
+                url=f"/admin/main/redbookspecies/{specie.id}/change/",
+                title=specie.title
+            )
+        content = template.format(content)
+        return mark_safe(content)
+
