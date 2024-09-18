@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 # Create your models here.
 
 
@@ -30,6 +31,30 @@ class HabitatAreas(models.Model):
         return self.title
 
 
+class Squads(models.Model):
+    class Meta:
+        verbose_name = "Отряд/отдел/порядок"
+        verbose_name_plural = "Отряд/отдел/порядок"
+    
+    title = models.CharField("Название", max_length=64)
+    international_name = models.CharField("Муждународное название", default="", max_length=64)
+
+    def __str__(self):
+        return self.title
+
+
+class Families(models.Model):
+    class Meta:
+        verbose_name = "Семейство"
+        verbose_name_plural = "Семейства"
+    
+    title = models.CharField("Название", max_length=64)
+    international_name = models.CharField("Муждународное название", default="", max_length=64)
+
+    def __str__(self):
+        return self.title
+
+
 class RedBookSpecies(models.Model):
     class Meta:
         verbose_name = "Вид"
@@ -40,9 +65,9 @@ class RedBookSpecies(models.Model):
     main_photo = models.ImageField("Фотография", upload_to="SpeciesGallery")
     photo_autor = models.CharField("Автор фото", max_length=100, default="")
     
-    descr_string_first = models.TextField("Короткое описание строка 1", default="")
-    descr_string_second = models.TextField("Короткое описание строка 2", default="")
-    descr_string_third = models.TextField("Короткое описание строка 3", default="")
+    international_name = models.CharField("Муждународное название", default="", max_length=120)
+    squad = models.ForeignKey(Squads, verbose_name="Отряд/отдел/порядок", on_delete=models.PROTECT, default=None, null=True)
+    family = models.ForeignKey(Families, verbose_name="Семейство", on_delete=models.PROTECT, default=None, null=True)
 
     status = models.TextField("Статус", default="")
     spreading = models.TextField("Распространение", default="")
@@ -54,9 +79,12 @@ class RedBookSpecies(models.Model):
     necessary_measures = models.TextField("Необходимые меры охраны", default="")
     sources = models.TextField("Источники", default="")
     autor = models.TextField("Автор", default="")
+    additional_info = models.TextField("Дополнительная информация", default="", blank=True)
+
+    actual_date = models.DateField("данные актуальны на", default=datetime.now)
 
     iframe_map = models.TextField("Код карты")
-    habitat_area = models.ManyToManyField(HabitatAreas, verbose_name="Районы обитания")
+    habitat_area = models.ManyToManyField(HabitatAreas, verbose_name="Районы обитания", related_name='red_book_species')
 
     def __str__(self):
         return self.title

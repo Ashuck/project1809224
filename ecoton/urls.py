@@ -21,7 +21,7 @@ from django.urls import path
 
 from main.species.lists import SpeciesListView, SpeciesTypesListView, HabitatAreasListView, FavoriteSpeciesListView
 from main.user_info.views import UserInfoView, UserRegistrtionView, UserLoginView
-from main.species.detail import DetailSpeciesView, UserFavoritesView
+from main.species.detail import DetailSpeciesView, UserFavoritesView, HabitatAreasDetailView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,10 +31,12 @@ urlpatterns = [
 
     path('species/list', SpeciesListView.as_view(), name='species_list'),
     path('species/types', SpeciesTypesListView.as_view(), name='species_types_list'),
-    path('species/arias', HabitatAreasListView.as_view(), name='arias_list'),
     path('species/detail', DetailSpeciesView.as_view(), name='species_detail'),
     path('species/change_favorite', UserFavoritesView.as_view(), name='change_favorite'),
     path('species/top_favorite', FavoriteSpeciesListView.as_view(), name='favorite_species_list'),
+
+    path('arias/list', HabitatAreasListView.as_view(), name='arias_list'),
+    path('arias/detail', HabitatAreasDetailView.as_view(), name='arias_detail'),
 ]
 
 

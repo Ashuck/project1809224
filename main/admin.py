@@ -9,8 +9,8 @@ from main import models
 
 # admin.site.register(models.UserInfo)
 # admin.site.register(models.UserGallery)
-# admin.site.register(models.SpeciesGallery)
-# admin.site.register(models.RedBookSpecies)
+admin.site.register(models.Squads)
+admin.site.register(models.Families)
 admin.site.register(models.HabitatAreas)
 admin.site.register(models.TypeSpecies)
 

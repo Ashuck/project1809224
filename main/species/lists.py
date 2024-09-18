@@ -47,8 +47,8 @@ class HabitatAreasListView(APIView):
     def get(self, req: Request):
         habitat_areas = HabitatAreas.objects.all()
         return Response({"habitat_areas": HabitatAreaSerializer(habitat_areas, many=True).data})
-    
 
+    
 class FavoriteSpeciesListView(APIView):
     def get(self, req: Request):
         top_species = RedBookSpecies.objects.annotate(

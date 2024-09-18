@@ -25,10 +25,12 @@ SECRET_KEY = 'django-insecure-ey@lrfh%%mygc&4bl*%3^jfr+!2+-zhg+ew6d%!h2o*m^@@3!o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.ivgpu.ru"
-]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+    CSRF_TRUSTED_ORIGINS = ["https://*.ivgpu.ru"]
+else:
+    ALLOWED_HOSTS = ["ecoton-backend.ivgpu.ru/"]
+    CSRF_TRUSTED_ORIGINS = ["https://*.ivgpu.ru"]
 
 
 # Application definition

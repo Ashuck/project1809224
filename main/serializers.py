@@ -14,13 +14,21 @@ class FavoriteSpeciesSerializer(ModelSerializer):
 
 
 class HabitatAreaSerializer(ModelSerializer):
-    description = SerializerMethodField()
     class Meta:
         model = HabitatAreas
-        fields = 'id', 'title', 'description', 'iframe_map'
+        fields = 'id', 'title', 'description'
+
+
+class DetailHabitatAreaSerializer(ModelSerializer):
+    species = SerializerMethodField()
+
+    class Meta:
+        model = HabitatAreas
+        fields = 'id', 'title', 'description', 'iframe_map', 'species'
     
-    def get_description(self, obj: RedBookSpecies):
-        return obj.description.split('\n')
+    def get_species(self, obj: HabitatAreas):
+        return ShortRedBookSpeciesSerializer(obj.red_book_species.all(), many=True).data
+
 
 
 class TypeSpeciesSerializer(ModelSerializer):
@@ -59,11 +67,11 @@ class RedBookSpeciesSerializer(ModelSerializer):
         model = RedBookSpecies
         fields = (
             'id', 'title', 'photo', "type", "status", "spreading",
-            'descr_string_first', 'descr_string_second', 'descr_string_third',
+            'international_name', 'squad', 'family', "additional_info",
             "pop_count", "habitat_features", "limit_features",
             "protect_step", "state_change", "necessary_measures",
             "sources", "autor", "iframe_map", "habitat_area", 
-            "favorite_count", "is_favorite", "gallery"
+            "favorite_count", "is_favorite", "gallery", "actual_date"
         )
     
     def __init__(self, *args: Any, is_favorite=False, **kwds: Any) -> Any:
