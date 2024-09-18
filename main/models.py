@@ -110,6 +110,13 @@ class UserInfo(models.Model):
     
     user = models.OneToOneField(User, models.PROTECT, verbose_name="Пользователь", related_name='user_info')
 
+    ROLES = (
+        ("admin", "Админ"),
+        ("user", "Пользователь")
+    )
+
+    role = models.CharField("Роль", max_length=32, choices=ROLES, default="user")
+
     first_name = models.CharField("Имя", max_length=32)
     second_name = models.CharField("Фамилия", max_length=32)
     email = models.EmailField("E-mail", unique=True)

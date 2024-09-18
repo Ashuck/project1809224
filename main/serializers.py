@@ -71,7 +71,7 @@ class RedBookSpeciesSerializer(ModelSerializer):
             "pop_count", "habitat_features", "limit_features",
             "protect_step", "state_change", "necessary_measures",
             "sources", "autor", "iframe_map", "habitat_area", 
-            "favorite_count", "is_favorite", "gallery", "actual_date"
+            "favorite_count", "is_favorite", "gallery", "actual_date",
         )
     
     def __init__(self, *args: Any, is_favorite=False, **kwds: Any) -> Any:
@@ -125,7 +125,7 @@ class UserInfoSerializer(ModelSerializer):
 
     class Meta:
         model = UserInfo
-        fields = 'first_name', 'second_name', 'email', 'id', 'favorites',  'photo', 'user_gallery'
+        fields = 'first_name', 'second_name', 'email', 'id', 'favorites', 'role', 'photo', 'user_gallery'
 
     def get_favorites(self, obj: UserInfo):
         return FavoriteSpeciesSerializer(obj.favorite_species.all(), many=True).data
