@@ -137,7 +137,6 @@ class UserGallery(models.Model):
         ("approved", "Одобрена"),
         ("rejected", "Отклонена"),
     )
-    
 
     specie = models.ForeignKey(RedBookSpecies, models.PROTECT, verbose_name="Вид")
     photo = models.ImageField("Фотография", upload_to="UserGallery")

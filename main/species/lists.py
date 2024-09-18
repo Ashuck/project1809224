@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
-from django.db.models import Count
+from django.db.models import Count, Q
 
 
 from main.models import RedBookSpecies, TypeSpecies, HabitatAreas
@@ -24,6 +24,12 @@ class SpeciesListView(APIView):
         if req.query_params.get('habitat_area_id'):
             habitat_areas = HabitatAreas.objects.filter(id=req.query_params.get('habitat_area_id'))
             species = species.filter(habitat_areas__in=habitat_areas)
+        
+        if req.query_params.get('search'):
+            species = species.filter(
+                Q(title__icontains=req.query_params.get('search')) |
+                Q(habitat_area__title__icontains=req.query_params.get('search')) 
+            ) # не работает для кириллицы в sqlite
         
         if req.user.is_authenticated:
             species_fav = species.filter(user_favorities__in=[req.user.user_info])

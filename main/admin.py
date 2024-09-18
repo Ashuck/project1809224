@@ -6,15 +6,11 @@ from django_admin_listfilter_dropdown.filters import (
     DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter
 )
 
-
 from main import models
 
 
-# admin.site.register(models.UserInfo)
-# admin.site.register(models.UserGallery)
 admin.site.register(models.Squads)
 admin.site.register(models.Families)
-# admin.site.register(models.HabitatAreas)
 admin.site.register(models.TypeSpecies)
 
 
@@ -45,7 +41,7 @@ class RedBookSpeciesAdmin(admin.ModelAdmin):
     )
     search_fields = ('title', 'international_name')
     inlines = [Inline_SpeciesGallery]
-    list_display = ('title','type', 'squad', 'family', 'iframe_map_exists')
+    list_display = ('title','type', 'squad', 'family', 'iframe_map_exists', 'actual_date')
 
     @admin.display(description='Есть карта')
     def iframe_map_exists(self, ub:models.RedBookSpecies):

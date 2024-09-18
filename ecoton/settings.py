@@ -11,6 +11,19 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dataclasses import dataclass
+import os
+
+
+@dataclass
+class Env:
+    DEBUG: bool = os.environ.get('DJANGO_DEBUG') == 'true' or True # загшука
+    SECRET_KEY: str = os.environ.get('DJANGO_SECRET', '1234')
+    DB_USER: str = os.environ.get('DB_USER', 'localbase')
+    DB_NAME: str = os.environ.get('DB_NAME', 'localbase')
+    DB_PASS: str = os.environ.get('DB_PASS', 'localpass')
+    DB_ADDR: str = os.environ.get('DB_ADDR', 'localhost')
+    DB_PORT: int = int(os.environ.get('DB_PORT', '5432'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,11 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ey@lrfh%%mygc&4bl*%3^jfr+!2+-zhg+ew6d%!h2o*m^@@3!o'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = Env.SECRET_KEY
+DEBUG = Env.DEBUG
 
 if DEBUG:
     ALLOWED_HOSTS = ["*"]
@@ -52,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # что бы не подставлять токен из куки на фронте
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -84,8 +95,12 @@ WSGI_APPLICATION = 'ecoton.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': Env.DB_USER,
+        'USER': Env.DB_USER,
+        'PASSWORD': Env.DB_PASS,
+        'HOST': Env.DB_ADDR,
+        'PORT': Env.DB_PORT
     }
 }
 
