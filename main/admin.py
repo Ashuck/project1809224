@@ -1,3 +1,4 @@
+from collections.abc import Callable, Sequence
 from typing import Any
 from django.contrib import admin
 from django.http import HttpRequest
@@ -22,13 +23,8 @@ class Inline_SpeciesGallery(admin.StackedInline):
 
     @admin.display(description='Фотография')
     def view_photo(self, sg:models.SpeciesGallery):
-        if sg.photo:
-            content = mark_safe(
-                f'''<a href="{sg.photo.url}">
-                <img width="150" height="150" src="{sg.photo.url}">
-                </a>''')
-        else:
-            content = '-'
+        if sg.photo: content = mark_safe(f'<a href="{sg.photo.url}"><img width="150" height="150" src="{sg.photo.url}"></a>')
+        else: content = '-'
         return content
 
 
@@ -41,13 +37,24 @@ class RedBookSpeciesAdmin(admin.ModelAdmin):
     )
     search_fields = ('title', 'international_name')
     inlines = [Inline_SpeciesGallery]
+    readonly_fields = 'map',
     list_display = ('title','type', 'squad', 'family', 'iframe_map_exists', 'actual_date')
 
     @admin.display(description='Есть карта')
     def iframe_map_exists(self, ub:models.RedBookSpecies):
-        if ub.iframe_map != "-":
-           return "+"
+        if ub.iframe_map != "-": return "+"
         return "-"
+    
+    def get_fields(self, request: HttpRequest, obj: Any | None = ...) -> Sequence[Callable[..., Any] | str]:
+        fields = super().get_fields(request, obj)
+        if 'map' in fields: fields.remove('map')
+        map_index = fields.index('iframe_map')
+        if map_index != -1: fields.insert(map_index + 1, 'map')
+        return fields
+    
+    @admin.display(description='Карта')
+    def map(self, ub:models.RedBookSpecies):
+        return mark_safe(ub.iframe_map)
 
 
 class Inline_UserGallery(admin.StackedInline):
@@ -56,16 +63,10 @@ class Inline_UserGallery(admin.StackedInline):
     fields = 'specie', 'status', 'photo', 'view_photo'
     readonly_fields = ('view_photo',)
     
-    
     @admin.display(description='Фотография')
     def view_photo(self, ug:models.UserGallery):
-        if ug.photo:
-            content = mark_safe(
-                f'''<a href="{ug.photo.url}">
-                <img width="150" height="150" src="{ug.photo.url}">
-                </a>''')
-        else:
-            content = '-'
+        if ug.photo: content = mark_safe(f'<a href="{ug.photo.url}"><img width="150" height="150" src="{ug.photo.url}"></a>')
+        else: content = '-'
         return content
     
 
@@ -89,11 +90,8 @@ class UserGalleryAdmin(admin.ModelAdmin):
 @admin.register(models.HabitatAreas)
 class HabitatAreasAdmin(admin.ModelAdmin):
     pass
-    fields = ('title', 'description', 'iframe_map', 
-              'specie_list'
-            )
-    readonly_fields = ('specie_list',)
-
+    fields = ('title', 'description', 'iframe_map', 'map', 'specie_list')
+    readonly_fields = ('map', 'specie_list')
 
     @admin.display(description='Обитатели')
     def specie_list(self, ha:models.HabitatAreas):
@@ -107,4 +105,8 @@ class HabitatAreasAdmin(admin.ModelAdmin):
             )
         content = template.format(content)
         return mark_safe(content)
+    
+    @admin.display(description='Карта')
+    def map(self, ub:models.RedBookSpecies):
+        return mark_safe(ub.iframe_map)
 
