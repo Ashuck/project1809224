@@ -92,6 +92,7 @@ class HabitatAreasAdmin(admin.ModelAdmin):
     pass
     fields = ('title', 'description', 'iframe_map', 'map', 'specie_list')
     readonly_fields = ('map', 'specie_list')
+    list_display = ('title', 'iframe_map_exists')
 
     @admin.display(description='Обитатели')
     def specie_list(self, ha:models.HabitatAreas):
@@ -109,4 +110,9 @@ class HabitatAreasAdmin(admin.ModelAdmin):
     @admin.display(description='Карта')
     def map(self, ub:models.RedBookSpecies):
         return mark_safe(ub.iframe_map)
+
+    @admin.display(description='Есть карта')
+    def iframe_map_exists(self, ub:models.RedBookSpecies):
+        if ub.iframe_map != "-": return "+"
+        return "-"
 
