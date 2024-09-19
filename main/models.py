@@ -24,6 +24,7 @@ class HabitatAreas(models.Model):
         verbose_name_plural = "Районы обитания"
     
     title = models.CharField("Название", max_length=64)
+    kadastr = models.CharField("Кадастровый номер", default="")
     description = models.TextField("Описание")
     iframe_map = models.TextField("Код карты")
 

@@ -90,9 +90,10 @@ class UserGalleryAdmin(admin.ModelAdmin):
 @admin.register(models.HabitatAreas)
 class HabitatAreasAdmin(admin.ModelAdmin):
     pass
-    fields = ('title', 'description', 'iframe_map', 'map', 'specie_list')
+    fields = ('title', 'kadastr', 'description', 'iframe_map', 'map', 'specie_list')
     readonly_fields = ('map', 'specie_list')
-    list_display = ('title', 'iframe_map_exists')
+    list_display = ('title', 'kadastr', 'iframe_map_exists')
+    search_fields = ('title', 'kadastr')
 
     @admin.display(description='Обитатели')
     def specie_list(self, ha:models.HabitatAreas):

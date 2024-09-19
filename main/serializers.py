@@ -16,7 +16,7 @@ class FavoriteSpeciesSerializer(ModelSerializer):
 class HabitatAreaSerializer(ModelSerializer):
     class Meta:
         model = HabitatAreas
-        fields = 'id', 'title', 'description'
+        fields = 'id', 'title', 'description', 'kadastr'
 
 
 class DetailHabitatAreaSerializer(ModelSerializer):
@@ -24,7 +24,7 @@ class DetailHabitatAreaSerializer(ModelSerializer):
 
     class Meta:
         model = HabitatAreas
-        fields = 'id', 'title', 'description', 'iframe_map', 'species'
+        fields = 'id', 'title', 'description', 'iframe_map', 'species', 'kadastr'
     
     def get_species(self, obj: HabitatAreas):
         return ShortRedBookSpeciesSerializer(obj.red_book_species.all(), many=True).data
