@@ -53,7 +53,13 @@ class HabitatAreasListView(APIView):
     def get(self, req: Request):
         habitat_areas = HabitatAreas.objects.all()
         if req.query_params.get('kadastr'):
-            habitat_areas = habitat_areas.filter(kadastr=req.query_params.get('kadastr'))
+            try:
+                habitat_areas = habitat_areas.filter(
+                    kadastr__icontains=req.query_params.get('kadastr')
+                )
+            except:
+                pass
+
         return Response({"habitat_areas": HabitatAreaSerializer(habitat_areas, many=True).data})
 
     

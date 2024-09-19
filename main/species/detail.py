@@ -47,7 +47,7 @@ class HabitatAreasDetailView(APIView):
     def get(self, req: Request):
         try:
             habitat_area = HabitatAreas.objects.get(pk=req.query_params.get('area_id'))
-        except HabitatAreas.DoesNotExist:
+        except:
             return Response({"description": "No such area"}, status=404)
 
         return Response({"habitat_area": DetailHabitatAreaSerializer(habitat_area).data})
